@@ -25,7 +25,7 @@ class BaseModel():
                 elif k == "__class__":
                     continue
                 else:
-                    self.__dict__[k] = v 
+                    self.__dict__[k] = v
         else:
             models.storage.new(self)
 

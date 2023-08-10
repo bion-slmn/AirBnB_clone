@@ -3,6 +3,12 @@
 import cmd
 from models import base_model
 import models
+from models import user
+from models import state
+from models import city
+from models import place
+from models import amenity
+from models import review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -22,16 +28,21 @@ class HBNBCommand(cmd.Cmd):
         print()
         return True
 
-    def do_create(self, class_name):
+    def do_create(self, class_n):
         '''Creates a new instance of BaseModel, saves it (to the JSON file)
         and prints the id '''
-        if class_name:
-            class_ = getattr(base_model, class_name, "name")
+        if class_n:
+            module = [base_model, user, state, city, amenity, place, review]
 
-            if class_ == "name":
+            for model_name in module:
+                class_name = getattr(model_name, class_n, None)
+                if class_name:
+                    break
+
+            if class_name is None:
                 print("** class doesn't exist **")
             else:
-                obj = class_()
+                obj = class_name()
                 obj.save()
                 print(f'{obj.id}')
         else:
@@ -43,15 +54,20 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
         else:
-            class_name, *para = args.split()
-            class_ = getattr(base_model, class_name, "name")
+            class_n, *para = args.split()
+            module = [base_model, user]
 
-            if class_ == "name":
+            for model_name in module:
+                class_name = getattr(model_name, class_n, None)
+                if class_name:
+                    break
+
+            if class_name is None:
                 print("** class doesn't exist **")
             elif not para:
                 print("** instance id missing **")
             else:
-                key = f"{class_.__name__}.{para[0]}"
+                key = f"{class_name.__name__}.{para[0]}"
                 if key in models.storage.all():
                     obj = models.storage.all()[key]
                     print(obj)
@@ -64,36 +80,54 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
         else:
-            class_name, *para = args.split()
-            class_ = getattr(base_model, class_name, "name")
+            class_n, *para = args.split()
+            module = [base_model, user, state, city, amenity, place, review]
 
-            if class_ == "name":
+            for model_name in module:
+                class_name = getattr(model_name, class_n, None)
+                if class_name:
+                    break
+
+            if class_name is None:
                 print("** class doesn't exist **")
             elif not para:
                 print("** instance id missing **")
             else:
-                key = f"{class_.__name__}.{para[0]}"
+                key = f"{class_name.__name__}.{para[0]}"
                 if key in models.storage.all():
                     obj = models.storage.all().pop(key)
-                    model.storage.save()
+                    models.storage.save()
                 else:
                     print("** no instance found **")
 
     def do_all(self, args):
         '''Prints all string representation of all instances
         based or not on the class name'''
-        comma = False
-        class_name = getattr(base_model, args, "name")
-        if class_name != "name" or len(args) == 0:
+        model_list = [base_model, user, state, city, amenity, place, review]
+
+        for model_name in model_list:
+            class_name = getattr(model_name, args, None)
+            if class_name:
+                break
+
+        if class_name is not None:
             all_objs = models.storage.all()
-            print("[", end="")
-            for obj_id in all_objs.keys():
-                obj = all_objs[obj_id]
-                if comma:
-                    print(", ", end="")
-                print(f'\"{obj}\"', end="")
-                comma = True
-            print("]")
+            obj_list = []
+            for key in all_objs.keys():
+                if class_name and key.startswith(class_name.__name__):
+                    obj = all_objs[key]
+                    obj_list.append(str(obj))
+
+            print(f'{obj_list}')
+
+        elif len(args) == 0:
+            all_objs = models.storage.all()
+            obj_list = []
+            for key in all_objs.keys():
+                obj = all_objs[key]
+                obj_list.append(str(obj))
+            print(f'{obj_list}')
+
         else:
             print("** class doesn't exist **")
 
@@ -103,15 +137,20 @@ class HBNBCommand(cmd.Cmd):
         if len(args) == 0:
             print("** class name missing **")
         else:
-            class_name, *para = args.split()
-            class_ = getattr(base_model, class_name, "name")
+            class_n, *para = args.split()
+            module = [base_model, user, state, city, amenity, place, review]
 
-            if class_ == "name":
+            for model_name in module:
+                class_name = getattr(model_name, class_n, None)
+                if class_name:
+                    break
+
+            if class_name is None:
                 print("** class doesn't exist **")
             elif not para:
                 print("** instance id missing **")
             else:
-                key = f"{class_.__name__}.{para[0]}"
+                key = f"{class_name.__name__}.{para[0]}"
                 if key not in models.storage.all():
                     print("** no instance found **")
                 elif len(para) == 1:
@@ -119,13 +158,16 @@ class HBNBCommand(cmd.Cmd):
                 elif len(para) == 2:
                     print("** value missing **")
                 else:
+
                     obj = models.storage.all()[key]
+
                     if hasattr(obj, para[1]):
-                        attr_value = obj.para[1]
-                        typ = type(attr_value)
-                        setattr(obj, para[1], typ(para[2]))
+                        typ = type(getattr(obj, para[1]))
+                        value = para[2].strip('"')
+                        setattr(obj, para[1], typ(value))
                     else:
-                        setattr(obj, para[1], para[2])
+                        value = para[2].strip('"')
+                        obj.__dict__[para[1]] = value
                     models.storage.save()
 
 
