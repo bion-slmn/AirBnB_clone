@@ -3,6 +3,13 @@
 import json
 from models.base_model import BaseModel
 from models import base_model
+from models.user import User
+from models import user
+from models import state
+from models import city
+from models import place
+from models import amenity
+from models import review
 
 
 class FileStorage:
@@ -27,8 +34,24 @@ class FileStorage:
     def save(self):
         '''serializes __objects to the JSON file (path: __file_path)'''
         data = {}
+
+        class_atr = {
+                user.User: ["email", "password", "first_name", "last_name"],
+                state.State: ["name"],
+                city.City: ["state_id", "name"],
+                amenity.Amenity: ["name"],
+                place.Place: ["city_id", "user_id", "name", "description",
+                              "number_rooms", "number_bathrooms", "max_guest",
+                              "price_by_night", "latitude", "longitude",
+                              "amenity_ids"],
+                review.Review: ["place_id", "user_id", "text"]
+                }
         for key, obj in FileStorage.__objects.items():
             data[key] = obj.to_dict()
+            if type(obj) in class_atr:
+                for attr in class_atr[type(obj)]:
+                    if hasattr(obj, attr):
+                        data[attr] = getattr(obj, attr)
 
         with open(FileStorage.__file_path, "w", encoding='utf-8') as myf:
             k = json.dump(data, myf)
@@ -37,17 +60,22 @@ class FileStorage:
         '''deserializes the JSON file to __objects'''
         # read the json file
         try:
-            FileStorage.__objects.clear()
-
             with open(FileStorage.__file_path, "r", encoding='utf-8') as myf:
                 class_dic = json.load(myf)
         # convertt to class object
+            module_list = [base_model, user, state, city, amenity, place,
+                           review]
+
             for key, value in class_dic.items():
                 name = key.split(".")
-                class_name = name[0]
-                class_ = getattr(base_model, class_name)
-                obj = class_(**value)
-                self.new(obj)
+                class_n = name[0]
+
+                for module in module_list:
+                    class_name = getattr(module, class_n, None)
+                    if class_name:
+                        obj = class_name(**value)
+                        self.new(obj)
+                        break
 
         except FileNotFoundError:
             pass
