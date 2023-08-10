@@ -50,6 +50,7 @@ class TestBaseModel(unittest.TestCase):
             obj.__str__(123)
         with self.assertRaises(TypeError):
             obj.__str__(["b", 'cv'])
+
     def test_save(self):
         '''test the save methode '''
         obj = BaseModel()
@@ -64,18 +65,18 @@ class TestBaseModel(unittest.TestCase):
         '''test the to_dict method'''
         obj = BaseModel()
         self.assertTrue(isinstance(obj.to_dict(), dict))
-        # checking the keys 
+        # checking the keys
         self.assertTrue("__class__" in obj.to_dict())
         self.assertTrue("id" in obj.to_dict())
         self.assertTrue("created_at" in obj.to_dict())
         self.assertTrue("updated_at" in obj.to_dict())
-        
+
         # checking for type of attr
         self.assertTrue(isinstance(obj.to_dict()["created_at"], str))
         self.assertTrue(isinstance(obj.to_dict()["updated_at"], str))
         self.assertTrue(isinstance(obj.to_dict()["id"], str))
         self.assertTrue(isinstance(obj.to_dict()["__class__"], str))
-        
+
         # isoformat testing
         iso_create = obj.created_at.isoformat()
         iso_update = obj.updated_at.isoformat()
@@ -115,7 +116,6 @@ class TestBaseModel(unittest.TestCase):
         self.assertNotEqual(obj.updated_at, "bion")
         self.assertNotEqual(obj.updated_at, 23)
 
-
     def test_module_args(self):
         '''passing more than a list as argument'''
         # pass a more thano one args
@@ -130,18 +130,19 @@ class TestBaseModel(unittest.TestCase):
     def test_module_dict(self):
         '''passing a dictionary as arguments'''
         #  pass a dictionary
-        args = {'my_number': 89, 'name': 'My First Model', 
+        args = {'my_number': 89, 'name': 'My First Model',
                 '__class__': 'BaseModel',
                 'updated_at': '2017-09-28T21:05:54.119572',
-                'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579', 
-                'created_at': '2017-09-28T21:05:54.119427'
-                }
+                'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579',
+                'created_at': '2017-09-28T21:05:54.119427'}
         obj = BaseModel(**args)
         self.assertEqual(obj.id, 'b6a6e15c-c67d-4312-9a75-9d084935e579')
         self.assertTrue(isinstance(obj.created_at, datetime.datetime))
         self.assertTrue(isinstance(obj.updated_at, datetime.datetime))
-        self.assertEqual(obj.created_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
-        self.assertEqual(obj.updated_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
+        self.assertEqual(obj.created_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
+        self.assertEqual(obj.updated_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
         self.assertEqual(obj.my_number, 89)
         self.assertEqual(obj.name, 'My First Model')
         self.assertNotEqual(obj.__class__, 'BaseModed')
@@ -156,22 +157,22 @@ class TestBaseModel(unittest.TestCase):
         self.assertTrue(isinstance(obj.created_at, datetime.datetime))
         self.assertTrue(isinstance(obj.updated_at, datetime.datetime))
 
-
     def test_mixed_args(self):
         '''passing a mixture of args and kwargs'''
         kwargs = {'my_number': 89, 'name': 'My First Model',
-                '__class__': 'BaseModel',
-                'updated_at': '2017-09-28T21:05:54.119572',
-                'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579',
-                'created_at': '2017-09-28T21:05:54.119427'
-                }
+                  '__class__': 'BaseModel',
+                  'updated_at': '2017-09-28T21:05:54.119572',
+                  'id': 'b6a6e15c-c67d-4312-9a75-9d084935e579',
+                  'created_at': '2017-09-28T21:05:54.119427'}
         arg = (1, 3, 5)
         obj = BaseModel(*arg, **kwargs)
         self.assertEqual(obj.id, 'b6a6e15c-c67d-4312-9a75-9d084935e579')
         self.assertTrue(isinstance(obj.created_at, datetime.datetime))
         self.assertTrue(isinstance(obj.updated_at, datetime.datetime))
-        self.assertEqual(obj.created_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
-        self.assertEqual(obj.updated_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
+        self.assertEqual(obj.created_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
+        self.assertEqual(obj.updated_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
         self.assertEqual(obj.my_number, 89)
         self.assertEqual(obj.name, 'My First Model')
         self.assertNotEqual(obj.__class__, 'BaseModed')
@@ -208,8 +209,10 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(obj.id, 'b6a6e15c-c67d-4312-9a75-9d084935e579')
         self.assertTrue(isinstance(obj.created_at, datetime.datetime))
         self.assertTrue(isinstance(obj.updated_at, datetime.datetime))
-        self.assertEqual(obj.created_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
-        self.assertEqual(obj.updated_at, datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
+        self.assertEqual(obj.created_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119427))
+        self.assertEqual(obj.updated_at,
+                         datetime.datetime(2017, 9, 28, 21, 5, 54, 119572))
 
     def test_id_kwarg(self):
         '''test id attribute with passed as a int, string or iterable'''
@@ -251,17 +254,18 @@ class TestBaseModel(unittest.TestCase):
         self.assertEqual(obj.id, '')
 
     def test_create_kwarg(self):
-        '''test created_at attribute with passed as a int, string or iterable'''
+        '''test created_at attribute with passed as a int, string/iterable'''
         kwargs = {'created_at': '2017-09-28T21:05:54.119427'}
 
         obj = BaseModel(**kwargs)
         self.assertTrue(isinstance(obj.created_at, datetime.datetime))
-        self.assertEqual(datetime.datetime(2017, 9, 28, 21, 5, 54, 119427), obj.created_at)
+        self.assertEqual(datetime.datetime(2017, 9, 28, 21, 5, 54, 119427),
+                         obj.created_at)
 
     def test_create_int(self):
         ''' passing created_at as a int'''
         kwargs = {'created_at': 1234}
-        
+
         with self.assertRaises(TypeError):
             obj = BaseModel(**kwargs)
 
@@ -276,7 +280,7 @@ class TestBaseModel(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             obj = BaseModel(**kwargs)
-    
+
     def test_create_None(self):
         ''' passing created as empty'''
         kwargs = {'created_at': None}
@@ -288,12 +292,13 @@ class TestBaseModel(unittest.TestCase):
             obj = BaseModel(**kwargs)
 
     def test_update_kwarg(self):
-        '''test updated_at attribute with passed as a int, string or iterable'''
+        '''test updated_at attribute with passed as a int, string or tuple'''
         kwargs = {'updated_at': '2017-09-28T21:05:54.119427'}
 
         obj = BaseModel(**kwargs)
         self.assertTrue(isinstance(obj.updated_at, datetime.datetime))
-        self.assertEqual(datetime.datetime(2017, 9, 28, 21, 5, 54, 119427), obj.updated_at)
+        self.assertEqual(datetime.datetime(2017, 9, 28, 21, 5, 54, 119427),
+                         obj.updated_at)
 
     def test_update_int(self):
         ''' passing updated_at as a int'''
