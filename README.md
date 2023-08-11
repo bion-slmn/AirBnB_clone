@@ -228,14 +228,14 @@ Updates a class instance based on a given id with a given key/value attribute pa
 
     Testing :straight_ruler
 
-Unittests for the HolbertonBnB project are defined in the tests folder. To run the entire test suite simultaneously, execute the following command:
+Unittest for the HolbertonBnB project are defined in the test folder. To run the entire test suite simultaneously, execute the following command:
 
-    python3 unittest -m discover tests
+    python3 unittest -m discover test
 
 
 Alternatively, you can specify a single test file to run at a time:
 
-    python3 unittest -m tests/test_console.py
+    python3 unittest -m test/test_console.py
 
 
     Concepts
@@ -324,7 +324,7 @@ root:~/AirBnB$
 
 GitHub repository: AirBnB_clone
 
-File: models/base_model.py, models/__init__.py, tests/
+File: models/base_model.py, models/__init__.py, test/
 
     Solution
 
@@ -447,7 +447,7 @@ create id and created_at as you did previously (new instance)
 
 GitHub repository: AirBnB_clone
 
-    File: models/base_model.py, tests/
+    File: models/base_model.py, test/
 
     Solution
 
@@ -617,7 +617,7 @@ root:~/AirBnB$
 
 GitHub repository: AirBnB_clone
 
-File: models/engine/file_storage.py, models/engine/__init__.py, models/__init__.py, models/base_model.py, tests/
+File: models/engine/file_storage.py, models/engine/__init__.py, models/__init__.py, models/base_model.py, test/
 
     Solution
 
@@ -716,7 +716,7 @@ root:~/AirBnB$
 
 
 
-NO UNITTESTS NEEDED
+NO UNITtest NEEDED
 
 Repo:
 
@@ -1037,7 +1037,7 @@ root:~/AirBnB$ cat file.json ; echo ""
 root:~/AirBnB$
 
 
-No unittests needed for the console
+No unittest needed for the console
 
 Repo:
 
