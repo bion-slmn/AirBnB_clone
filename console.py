@@ -17,6 +17,35 @@ class HBNBCommand(cmd.Cmd):
     '''
     prompt = "(hbnb) "
 
+    def parseline(self, line):
+        '''
+        Parse the line into a command name and a string
+        containing the arguments.
+        '''
+        if line.endswith(")"):
+            class_n, args = line.split(".")
+            command, para = args.split("(")
+            # nothing in the brackets
+            if len(para) == 1:
+                line = f'{command} {class_n}'
+                return super().parseline(line)
+
+            else:
+                para = para.strip(")")
+                para = para.split(", ")
+
+                all_item = []
+                for item in para:
+                    if item.startswith('"'):
+                        item = item.strip('"')
+                    all_item.append(item)
+                param = " ".join(all_item)
+                line = f'{command} {class_n} {param}'
+                return super().parseline(line)
+
+        else:
+            return super().parseline(line)
+
     def do_quit(self, args):
         ''' Quit command to exit the program
         '''
@@ -27,6 +56,10 @@ class HBNBCommand(cmd.Cmd):
         '''
         print()
         return True
+
+    def emptyline(self):
+        '''when an empty line + Enter exeuted doesnt print any'''
+        return False
 
     def do_create(self, class_n):
         '''Creates a new instance of BaseModel, saves it (to the JSON file)
@@ -101,8 +134,10 @@ class HBNBCommand(cmd.Cmd):
                     print("** no instance found **")
 
     def do_all(self, args):
-        '''Prints all string representation of all instances
-        based or not on the class name'''
+        '''
+        Prints all string representation of all instances
+        based or not on the class name
+        '''
         model_list = [base_model, user, state, city, amenity, place, review]
 
         for model_name in model_list:
@@ -130,6 +165,29 @@ class HBNBCommand(cmd.Cmd):
 
         else:
             print("** class doesn't exist **")
+
+    def do_count(self, args):
+        '''count the number of object in the storage'''
+        model_list = [base_model, user, state, city, amenity, place, review]
+
+        for model_name in model_list:
+            class_name = getattr(model_name, args, None)
+            if class_name:
+                break
+        count = 0
+        if class_name is not None:
+            all_objs = models.storage.all()
+            count = 0
+            for key in all_objs.keys():
+                if class_name and key.startswith(class_name.__name__):
+                    count += 1
+
+        if len(args) == 0:
+            all_objs = models.storage.all()
+            for key in all_objs.keys():
+                count += 1
+
+        print(count)
 
     def do_update(self, args):
         '''Updates an instance based on the class name and id

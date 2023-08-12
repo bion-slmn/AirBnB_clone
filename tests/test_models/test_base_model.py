@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''Testing base classs in th module base'''
 import unittest
+import os
 import datetime
 from models.base_model import BaseModel
 
@@ -328,3 +329,18 @@ class TestBaseModel(unittest.TestCase):
         kwargs = {'updated_at': ""}
         with self.assertRaises(ValueError):
             obj = BaseModel(**kwargs)
+
+    def test_save_storage(self):
+        ''' test the save method of storage'''
+        # check saving createds a file.path
+        if os.path.exists('file.json'):
+            os.remove('file.json')
+        obj = BaseModel()
+        obj.save()
+        self.assertTrue(os.path.exists('file.json'))
+        self.assertTrue(os.stat('file.json').st_size != 0)
+
+        # check that content are json strings;
+        with open('file.json', encoding="utf-8") as f:
+            cont = f.read()
+        self.assertTrue(isinstance(cont, str))
