@@ -29,12 +29,12 @@ class HBNBCommand(cmd.Cmd):
             if len(para) == 1:
                 line = f'{command} {class_n}'
                 return super().parseline(line)
-            
+
             else:
                 para = para.strip(")")
                 para = para.split(", ")
-                
-                all_item = []                
+
+                all_item = []
                 for item in para:
                     if item.startswith('"'):
                         item = item.strip('"')
@@ -188,7 +188,6 @@ class HBNBCommand(cmd.Cmd):
                 count += 1
 
         print(count)
-
 
     def do_update(self, args):
         '''Updates an instance based on the class name and id
