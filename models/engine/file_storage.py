@@ -46,6 +46,36 @@ class FileStorage:
                               "amenity_ids"],
                 review.Review: ["place_id", "user_id", "text"]
                 }
+        a_list = []
+
+        # setting the id attributes
+        for k, v in FileStorage.__objects.items():
+            if isinstance(v, state.State):
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, city.City):
+                        setattr(obj, 'state_id', v.id)
+            if isinstance(v, city.City):
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, place.Place):
+                        setattr(obj, 'city_id', v.id)
+            if isinstance(v, user.User):
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, place.Place):
+                        setattr(obj, 'user_id', v.id)
+            if isinstance(v, amenity.Amenity):
+                a_list.append(v.id)
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, place.Place):
+                        setattr(obj, 'amenity_ids', a_list)
+            if isinstance(v, place.Place):
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, review.Review):
+                        setattr(obj, 'place_id', v.id)
+            if isinstance(v, user.User):
+                for obj in FileStorage.__objects.values():
+                    if isinstance(obj, review.Review):
+                        setattr(obj, 'user_id', v.id)
+        # plus adding class attribute
         for key, obj in FileStorage.__objects.items():
             data[key] = obj.to_dict()
             if type(obj) in class_atr:
