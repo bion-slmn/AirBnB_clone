@@ -32,15 +32,8 @@ class HBNBCommand(cmd.Cmd):
 
             else:
                 para = para.strip(")")
-                para = para.split(", ")
-
-                all_item = []
-                for item in para:
-                    if item.startswith('"'):
-                        item = item.strip('"')
-                    all_item.append(item)
-                param = " ".join(all_item)
-                line = f'{command} {class_n} {param}'
+                para = para.strip('"')
+                line = f'{command} {class_n} {para}'
                 return super().parseline(line)
 
         else:
