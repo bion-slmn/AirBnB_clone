@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 '''This module defines the entry point of commmand interpeter'''
 import cmd
+import re
 from models import base_model
 import models
 from models import user
@@ -22,18 +23,20 @@ class HBNBCommand(cmd.Cmd):
         Parse the line into a command name and a string
         containing the arguments.
         '''
-        if line.endswith(")"):
-            class_n, args = line.split(".")
-            command, para = args.split("(")
+        bracket = re.match(r'\s*?(\w+)\.(\w+)\((.*)\)', line)
+        if bracket:
+            class_n = bracket.group(1)
+            command = bracket.group(2)
+            para = bracket.group(3)
             # nothing in the brackets
-            if len(para) == 1:
+            if len(para) == 0:
                 line = f'{command} {class_n}'
                 return super().parseline(line)
 
             else:
-                para = para.strip(")")
                 para = para.strip('"')
                 line = f'{command} {class_n} {para}'
+                print(line)
                 return super().parseline(line)
 
         else:
