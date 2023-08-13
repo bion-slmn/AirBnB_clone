@@ -34,9 +34,9 @@ class HBNBCommand(cmd.Cmd):
                 return super().parseline(line)
 
             else:
-                para = para.strip('"')
+                args = [x.strip('"') for x in para.split(', ')]
+                para = " ".join(args)
                 line = f'{command} {class_n} {para}'
-                print(line)
                 return super().parseline(line)
 
         else:
