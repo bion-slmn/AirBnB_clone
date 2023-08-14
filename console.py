@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class name missing **")
         else:
             class_n, *para = args.split()
-            module = [base_model, user]
+            module = [base_model, user, state, city, amenity, place, review]
 
             for model_name in module:
                 class_name = getattr(model_name, class_n, None)
